@@ -34,16 +34,6 @@ public class GooglePhotoSync {
             } else {
                 //System.out.println("Files:");
                 for (File file : files) {
-
-                    if (file.getParents() != null && file.getParents().get(0).equals("0B37lk-sxC9NMNXhKcll0VGM2eFU")) {
-                        Entry e = new Entry(file.getId(), file.getParents().get(0), file.getName(), file.getWebViewLink());
-                        System.out.println("XXX " + e.toString());
-                    }
-/*
-                    System.out.printf("id=%s, mimeType=%s, name=%s, link=%s, parent=%s\n",
-                            file.getId(), file.getMimeType(), file.getName(), file.getWebViewLink(), file.getParents());
-*/
-
                     if (file.getParents() == null) {
                         System.out.println("skipping (parents=null)");
                         continue;
