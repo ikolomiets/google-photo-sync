@@ -1,0 +1,24 @@
+package #package#;
+
+import com.electrit.meta.UniqueId;
+
+public enum Content implements UniqueId {
+
+/*
+    _0B37lk_sxC9NMVzFzVl83ajNCWnc("0B37lk-sxC9NMVzFzVl83ajNCWnc"),
+    _0B37lk_sxC9NMeGgtUVJ3dG5QR2c("0B37lk-sxC9NMeGgtUVJ3dG5QR2c");
+*/
+
+    #body#
+
+    private String id;
+
+    Content(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+}
