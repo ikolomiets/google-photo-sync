@@ -17,7 +17,7 @@ public class Folder extends Entry {
     }
 
     public void addChild(Entry entry) {
-        if (!entry.getParendId().equals(getId()))
+        if (!entry.getParentId().equals(getId()))
             throw new IllegalArgumentException("Folder's id doesn't match entry's parentId");
         children.add(entry);
     }
