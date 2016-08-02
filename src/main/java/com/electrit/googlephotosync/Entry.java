@@ -1,6 +1,5 @@
 package com.electrit.googlephotosync;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Entry {
@@ -30,11 +29,15 @@ public class Entry {
 
     public String getIdForJava() {
         String result = this.id.replace('-', '_');
-        Matcher startsWithDigit = RE_STARTS_WITH_DIGIT.matcher(result);
         if (RE_STARTS_WITH_DIGIT.matcher(result).matches()) {
             result = '_' + result;
         }
         return result;
+    }
+
+    public String getFullName(String base) {
+        String javaPackage = getJavaPackage(base);
+        return javaPackage != null ? javaPackage + '.' + getName() : getName();
     }
 
     public String getJavaPackage(String base) {

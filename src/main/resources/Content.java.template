@@ -1,15 +1,8 @@
 package #package#;
 
-import com.electrit.meta.UniqueId;
+public enum Content {
 
-public enum Content implements UniqueId {
-
-/*
-    _0B37lk_sxC9NMVzFzVl83ajNCWnc("0B37lk-sxC9NMVzFzVl83ajNCWnc"),
-    _0B37lk_sxC9NMeGgtUVJ3dG5QR2c("0B37lk-sxC9NMeGgtUVJ3dG5QR2c");
-*/
-
-    #body#
+#body#;
 
     private String id;
 
@@ -17,7 +10,8 @@ public enum Content implements UniqueId {
         this.id = id;
     }
 
-    public String getId() {
+    @Override
+    public String toString() {
         return id;
     }
 

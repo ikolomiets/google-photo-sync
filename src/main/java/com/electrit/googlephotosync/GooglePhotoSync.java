@@ -1,20 +1,19 @@
 package com.electrit.googlephotosync;
 
-
 import com.google.api.services.drive.Drive;
 import com.google.api.services.drive.model.FileList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 public class GooglePhotoSync {
 
     private final static Logger logger = LoggerFactory.getLogger(GooglePhotoSync.class);
 
-    private static final String BASE_DIR = "../classified-ads/src";
+    private static final String BASE_DIR = System.getProperty("BASE_DIR");
+    private static final String BASE_PACKAGE = System.getProperty("BASE_PACKAGE");
     private static final String MIME_APPS_FOLDER = "application/vnd.google-apps.folder";
     private static final String MIME_IMAGE = "image/jpeg";
 
@@ -119,16 +118,58 @@ public class GooglePhotoSync {
         createFiles(new File(BASE_DIR), classifiedAds);
     }
 
-    private static void createFiles(File baseDir, Folder folder) {
-        if (!baseDir.isDirectory())
-            throw new IllegalArgumentException("baseDir is not a directory");
+    private static void createFiles(File baseDir, Folder folder) throws Exception {
+        if (!baseDir.exists() && !baseDir.mkdirs())
+            throw new Exception("Failed to create " + baseDir.getCanonicalPath());
 
+        List<Entry> entries = new ArrayList<>();
         for (Entry entry : folder.getChildren()) {
-            if (entry instanceof Folder)
-                createFiles(baseDir, (Folder) entry);
-            else
-                logger.debug("{}, {}", entry.getJavaPackage("classified_ads"), entry.getName());
+            if (entry instanceof Folder) {
+                createFiles(new File(baseDir, entry.getName()), (Folder) entry);
+            } else {
+                entries.add(entry);
+            }
         }
+
+        if (entries.isEmpty())
+            return;
+
+        File contentFile = new File(baseDir, "Content.java");
+        String aPackage;
+        if (BASE_PACKAGE.isEmpty()) {
+            aPackage = String.format("%s", folder.getFullName("classified_ads"));
+        } else {
+            aPackage = String.format("%s.%s", BASE_PACKAGE, folder.getFullName("classified_ads"));
+        }
+
+        if (contentFile.createNewFile()) {
+            logger.debug("create {}.Content enum: {}", aPackage, contentFile.getCanonicalPath());
+        } else {
+            logger.debug("write to existing {}.Content: {}", aPackage, contentFile.getCanonicalPath());
+        }
+
+        PrintWriter contentWriter = new PrintWriter(contentFile);
+
+        StringBuilder bodyBuilder = new StringBuilder();
+        for (Entry entry : entries) {
+            logger.debug("add {} (id={}) member to Content enum", entry.getIdForJava(), entry.getId());
+            if (bodyBuilder.length() > 0)
+                bodyBuilder.append(",\n");
+            bodyBuilder.append(String.format("    %s(\"%s\")", entry.getIdForJava(), entry.getId()));
+        }
+
+        logger.debug("body:\n{}", bodyBuilder);
+
+        ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+        InputStream resourceAsStream = classloader.getResourceAsStream("Content.java.template");
+        BufferedReader br = new BufferedReader(new InputStreamReader(resourceAsStream));
+        String line;
+        while ((line = br.readLine()) != null) {
+            String result = line.replace("#package#", aPackage).replace("#body#", bodyBuilder);
+            contentWriter.append(result).append("\n");
+        }
+
+        contentWriter.close();
     }
 
 }
