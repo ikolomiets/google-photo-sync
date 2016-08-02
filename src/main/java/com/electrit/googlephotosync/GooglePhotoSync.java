@@ -17,7 +17,7 @@ public class GooglePhotoSync {
     private static final String MIME_APPS_FOLDER = "application/vnd.google-apps.folder";
     private static final String MIME_IMAGE = "image/jpeg";
 
-    private final Set<Entry> topEntries = new HashSet<Entry>();
+    private final Set<Entry> topEntries = new HashSet<>();
 
     public Set<Entry> buildTopEntries() throws IOException {
         Drive googleDriveService = GoogleDriveService.getDriveService();
