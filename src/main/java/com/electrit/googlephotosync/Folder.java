@@ -8,8 +8,8 @@ public class Folder extends Entry {
 
     private final Set<Entry> children = new HashSet<>();
 
-    public Folder(String id, String parendId, String name, String webViewLink) {
-        super(id, parendId, name, webViewLink);
+    public Folder(String id, String parendId, String name, String webViewLink, String createdTime) {
+        super(id, parendId, name, webViewLink, createdTime);
     }
 
     public Set<Entry> getChildren() {

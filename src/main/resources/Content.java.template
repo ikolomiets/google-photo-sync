@@ -1,18 +1,37 @@
 package #package#;
 
-public enum Content {
+import base.Classified;
+
+public enum Content implements Classified {
 
 #body#;
 
-    private String id;
+    private final String id;
+    private final String createdDateTime;
+    private final Classified original;
 
-    Content(String id) {
+    Content(String id, String createdDateTime, Classified original) {
         this.id = id;
+        this.createdDateTime = createdDateTime;
+        this.original = original;
+    }
+
+    Content(String id, String createdDateTime) {
+        this(id, createdDateTime, null);
     }
 
     @Override
-    public String toString() {
+    public String getId() {
         return id;
+    }
+
+    @Override
+    public String getCreatedDateTime() {
+        return createdDateTime;
+    }
+
+    public Classified getOriginal() {
+        return original;
     }
 
 }

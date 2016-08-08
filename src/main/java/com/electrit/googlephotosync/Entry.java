@@ -7,15 +7,20 @@ public class Entry {
     private final String id;
     private final String parendId;
     private final String name;
+    private final String createdTime;
     private final String webViewLink;
 
     private Folder parentFolder;
 
     private final static Pattern RE_STARTS_WITH_DIGIT = Pattern.compile("^\\d.*");
 
-    public Entry(String id, String parendId, String name, String webViewLink) {
+    public Entry(String id, String parendId, String name, String webViewLink, String createdTime) {
+        this.createdTime = createdTime;
         if (id == null)
             throw new NullPointerException("id must not be null");
+
+        if (name == null)
+            throw new NullPointerException("name must not be null");
 
         this.id = id;
         this.parendId = parendId;
@@ -59,7 +64,11 @@ public class Entry {
     }
 
     public String getName() {
-        return name;
+        return name.replace(" ", "_");
+    }
+
+    public String getCreatedTime() {
+        return createdTime;
     }
 
     public String getWebViewLink() {

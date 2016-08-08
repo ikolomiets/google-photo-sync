@@ -1,0 +1,13 @@
+package #package#;
+
+import base.AbstractClassifiedsProvider;
+import base.ClassifiedComposer;
+
+public abstract class AbstractContentClassifiedsProvider extends AbstractClassifiedsProvider {
+
+    public AbstractContentClassifiedsProvider() {
+#newClassifiedComposers#
+    }
+
+#absractMethods#
+}
