@@ -157,14 +157,14 @@ public class GooglePhotoSync {
             bodyBuilder.append("     */\n");
             bodyBuilder.append(String.format("    %s(\"%s\", \"%s\")", entry.getIdForJava(), entry.getId(), entry.getCreatedTime()));
 
-            logger.debug("add newClassifiedComposer for id={} to AbstractContentClassifiedsProvider", entry.getIdForJava());
+            logger.debug("add newClassifiedComposer for id={} to ContentClassifiedsProvider", entry.getIdForJava());
             newClassifiedComposer.append("        ")
                     .append(entry.getIdForJava())
                     .append("(newClassifiedComposer(Content.")
                     .append(entry.getIdForJava())
                     .append("));\n");
 
-            logger.debug("add absract method for id={} to AbstractContentClassifiedsProvider", entry.getIdForJava());
+            logger.debug("add absract method for id={} to ContentClassifiedsProvider", entry.getIdForJava());
             absractMethods
                     .append("    /**\n")
                     .append("     * <a href=\"")
@@ -185,7 +185,7 @@ public class GooglePhotoSync {
         //logger.debug("body:\n{}", bodyBuilder);
 
         PrintWriter contentWriter = new PrintWriter(createFile(baseDir, aPackage, "Content.java"));
-        PrintWriter abstractProviderWriter = new PrintWriter(createFile(baseDir, aPackage, "AbstractContentClassifiedsProvider.java"));
+        PrintWriter abstractProviderWriter = new PrintWriter(createFile(baseDir, aPackage, "ContentClassifiedsProvider.java"));
 
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 
@@ -199,7 +199,7 @@ public class GooglePhotoSync {
         contentWriter.close();
 
         InputStream abstractProviderTemplateAsStream =
-                classloader.getResourceAsStream("AbstractContentClassifiedsProvider.java.template");
+                classloader.getResourceAsStream("ContentClassifiedsProvider.java.template");
         br = new BufferedReader(new InputStreamReader(abstractProviderTemplateAsStream));
         while ((line = br.readLine()) != null) {
             String result = line

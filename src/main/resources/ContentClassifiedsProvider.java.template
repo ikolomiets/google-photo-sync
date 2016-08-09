@@ -3,9 +3,9 @@ package #package#;
 import base.AbstractClassifiedsProvider;
 import base.ClassifiedComposer;
 
-public abstract class AbstractContentClassifiedsProvider extends AbstractClassifiedsProvider {
+public abstract class ContentClassifiedsProvider extends AbstractClassifiedsProvider {
 
-    public AbstractContentClassifiedsProvider() {
+    public ContentClassifiedsProvider() {
 #newClassifiedComposers#
     }
 
