@@ -15,7 +15,8 @@ public class GooglePhotoSync {
     private static final String BASE_DIR = System.getProperty("BASE_DIR");
     private static final String BASE_PACKAGE = System.getProperty("BASE_PACKAGE");
     private static final String MIME_APPS_FOLDER = "application/vnd.google-apps.folder";
-    private static final String MIME_IMAGE = "image/jpeg";
+    private static final String MIME_IMAGE_JPG = "image/jpeg";
+    private static final String MIME_IMAGE_PNG = "image/png";
 
     private final Set<Entry> topEntries = new HashSet<>();
 
@@ -26,7 +27,7 @@ public class GooglePhotoSync {
         do {
             FileList result = googleDriveService.files().list()
                     .setPageSize(100)
-                    .setQ("mimeType = '" + MIME_APPS_FOLDER + "' or mimeType = '" + MIME_IMAGE + "'")
+                    .setQ("(mimeType = '" + MIME_APPS_FOLDER + "' or mimeType = '" + MIME_IMAGE_JPG + "' or mimeType = '" + MIME_IMAGE_PNG + "') and explicitlyTrashed=false")
                     .setFields("nextPageToken, files(id, mimeType, name, webViewLink, parents, createdTime, explicitlyTrashed)")
                     //.setFields("nextPageToken, files")
                     .setPageToken(nextPageToken)
@@ -38,18 +39,19 @@ public class GooglePhotoSync {
                 logger.warn("No files found.");
             } else {
                 for (com.google.api.services.drive.model.File file : files) {
+
                     if (file.getParents() == null) {
                         logger.warn("skipping (parents=null)");
                         continue;
                     } else if (file.getExplicitlyTrashed()) {
-                        logger.debug("skipping explicitly trashed file: {}", file.getId());
+                        logger.warn("skipping explicitly trashed file: {}", file.getId());
                         continue;
                     }
 
                     Entry entry;
                     if (MIME_APPS_FOLDER.equals(file.getMimeType())) {
                         entry = new Folder(file.getId(), file.getParents().get(0), file.getName(), file.getWebViewLink(), file.getCreatedTime().toString());
-                    } else if (MIME_IMAGE.equals(file.getMimeType())) {
+                    } else if (MIME_IMAGE_JPG.equals(file.getMimeType()) || MIME_IMAGE_PNG.equals(file.getMimeType())) {
                         entry = new Entry(file.getId(), file.getParents().get(0), file.getName(), file.getWebViewLink(), file.getCreatedTime().toString());
                     } else {
                         throw new IllegalArgumentException("Invalid mimeType: " + file.getMimeType());
@@ -148,7 +150,7 @@ public class GooglePhotoSync {
         StringBuilder newClassifiedComposer = new StringBuilder();
         StringBuilder absractMethods = new StringBuilder();
         for (Entry entry : entries) {
-            logger.debug("add {} (id={}) member to Content enum", entry.getIdForJava(), entry.getId());
+            logger.debug("add {} (id={}, name={}) member to {}.Content enum", entry.getIdForJava(), entry.getId(), entry.getName(), entry.getJavaPackage("classified_ads"));
             if (bodyBuilder.length() > 0)
                 bodyBuilder.append(",\n");
 
@@ -216,7 +218,7 @@ public class GooglePhotoSync {
         if (file.createNewFile()) {
             logger.debug("create {}.{} enum: {}", aPackage, fileName, file.getCanonicalPath());
         } else {
-            logger.debug("write to existing {}.{}: {}", aPackage, file, file.getCanonicalPath());
+            logger.debug("write to existing {}: {}", fileName, file.getCanonicalPath());
         }
         return file;
     }
