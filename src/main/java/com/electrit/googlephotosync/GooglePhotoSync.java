@@ -136,6 +136,8 @@ public class GooglePhotoSync {
             }
         }
 
+        Collections.sort(entries, (o1, o2) -> o1.getName().compareTo(o2.getName()));
+
         if (entries.isEmpty())
             return;
 
