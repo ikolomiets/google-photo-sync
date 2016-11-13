@@ -34,4 +34,9 @@ public enum Content implements Classified {
         return original;
     }
 
+    @Override
+    public String toString() {
+        return id;
+    }
+
 }
